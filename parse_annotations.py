@@ -81,3 +81,4 @@ if __name__=='__main__':
         output_file = output_dir_path + filename.split('.txt')[0] + '.json'
         with open(output_file, 'w') as f:
             json.dump(annotations, f)
+            
