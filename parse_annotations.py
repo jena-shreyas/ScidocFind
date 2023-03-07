@@ -81,4 +81,9 @@ if __name__=='__main__':
         output_file = output_dir_path + filename.split('.txt')[0] + '.json'
         with open(output_file, 'w') as f:
             json.dump(annotations, f)
+
+        # with open(output_file, 'r') as f:
+        #     annot = json.load(f)
+        #     for paper_dict in annot:
+        #         print(paper_dict.keys())
             
