@@ -1,18 +1,29 @@
-import os
+
 import json
+import os
 
 def parseAnnotations(path):
     '''
         Returns docs as a dictionary {paper_id, adju_relevance, 
         title, background_label, method_label, result_label, abstract}
     '''
+
     with open(path, 'r') as f:
-        doc_json = {}
+        doc_json = {
+            "paper_id": "",
+            "adju_relevance": "",
+            "title": "",
+            "background_label": "",
+            "method_label": "",
+            "result_label": "",
+            "abstract": ""
+        }
         docs = []
         lines = f.readlines()
         lines.pop(0)
         while lines:
             line = lines.pop(0)
+            # print(line)
             if line.startswith('paper_id:'):
                 paper_id = line.split(';')[0].split(': ')[1].strip()
                 doc_json["paper_id"] = paper_id
@@ -22,16 +33,21 @@ def parseAnnotations(path):
             elif line.startswith('ABSTRACT:'):
                 abstract = ': '.join(line.split(': ')[1:]).strip()
                 complete_abstract = ""
+                labelF = 0
                 for label in ["background_label", "method_label", "result_label"]:
                     if abstract.startswith(label):
                         abstract = ': '.join(abstract.split(': ')[1:]).strip()
-                        if doc_json.get(label):
-                            doc_json[label] = doc_json[label] + ' ' + abstract
-                            complete_abstract = doc_json[label]
-                        else:
-                            doc_json[label] = abstract
-                            complete_abstract = abstract
+                        doc_json[label] = doc_json[label] + ' ' + abstract
+                        complete_abstract = complete_abstract + ' ' + abstract
+                        labelF = 1
                         break
+                if abstract.startswith('objective_label'):
+                    abstract = ': '.join(abstract.split(': ')[1:]).strip()
+                    doc_json['background_label'] = doc_json['background_label'] + ' ' + abstract
+                    complete_abstract = complete_abstract + ' ' + abstract
+                elif labelF == 0:
+                    abstract = ': '.join(abstract.split(': ')[1:]).strip()
+                    complete_abstract = complete_abstract + ' ' + abstract
                 while lines:
                     line = lines.pop(0)
                     label_found = False
@@ -39,51 +55,64 @@ def parseAnnotations(path):
                         if line.startswith(label):
                             line = ': '.join(line.split(': ')[1:]).strip()
                             label_found = True
-                            if doc_json.get(label):
-                                doc_json[label] = doc_json[label] + ' ' + line
-                                complete_abstract = complete_abstract + \
-                                    ' ' + doc_json[label]
-                            else:
-                                doc_json[label] = line
-                                complete_abstract = complete_abstract+' '+line
+                            doc_json[label] = doc_json[label] + ' ' + line
+                            complete_abstract = complete_abstract + ' ' + line
                             break
                     if label_found:
                         continue
                     else:
-                        doc_json["abstract"] = complete_abstract
-                        docs.append(doc_json)
-                        doc_json = {}
-                        break
+                        if line.startswith("="):
+                            doc_json["abstract"] = complete_abstract
+                            for label in ["background_label", "method_label", "result_label", "abstract"]:
+                                if len(doc_json[label])!=0:
+                                    doc_json[label] = doc_json[label][1:]
+
+                            docs.append(doc_json)
+                            doc_json = {
+                                "paper_id": "",
+                                "adju_relevance": "",
+                                "title": "",
+                                "background_label": "",
+                                "method_label": "",
+                                "result_label": "",
+                                "abstract": ""
+                            }
+                            break
+                        if line.startswith("objective_label"):
+                            line = ': '.join(line.split(': ')[1:]).strip()
+                            doc_json['background_label'] = doc_json['background_label'] + ' ' + line
+                            complete_abstract = complete_abstract + ' ' + line
+                        else:
+                            line = ': '.join(line.split(': ')[1:]).strip()
+                            complete_abstract = complete_abstract + ' ' + line
 
             elif line.startswith('adju relevance: '):
-              try:
-                adju_relevance = line.split(': ')[1].split(' ')[1].split('(+')[1].strip()
-                doc_json["adju_relevance"] = int(adju_relevance[:-1])
-              except IndexError:
+                # print(line)
                 adju_relevance = line.split(': ')[1].split(' ')[1].split('(')[1].strip()
-                doc_json["adju_relevance"] = int(adju_relevance[:-1])
+                doc_json["adju_relevance"] = adju_relevance[:-1]
+
             elif line.startswith('difference: ') or line.startswith('sources: '):
                 continue
 
-    if doc_json.get("paper_id"):
+    if doc_json.get("paper_id") and doc_json["paper_id"]!='':
         docs.append(doc_json)
+    
     return docs
 
 
-if __name__=='__main__':
-    dir_path = 'CSFCube/readable_annotations/'
-    output_dir_path = 'parsed_annotations/'
-    annotations = dict()
-    all_files  = os.listdir(dir_path)
-    filenames = [file for file in all_files if os.path.isfile(os.path.join(dir_path, file))]
-    for filename in filenames:
-        annotations = parseAnnotations(dir_path + filename)
-        output_file = output_dir_path + filename.split('.txt')[0] + '.json'
-        with open(output_file, 'w') as f:
-            json.dump(annotations, f)
+# parseAnnotations('file.txt')
 
-        # with open(output_file, 'r') as f:
-        #     annot = json.load(f)
-        #     for paper_dict in annot:
-        #         print(paper_dict.keys())
-            
+def main():
+    
+    input_dir = './readable_annotations/'
+    output_dir = './parsed_annotations/'
+    for file_name in os.listdir(input_dir):
+        print(file_name)
+        path = os.path.join(input_dir, file_name)
+        docs = parseAnnotations(path)
+        with open(os.path.join(output_dir, file_name.split('.')[0]+'.json'), 'w') as f:
+            json.dump(docs, f)
+
+
+if __name__ == "__main__":
+    main()
