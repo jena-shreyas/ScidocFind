@@ -28,7 +28,7 @@ Run all cells after uploading CSFCube-master.zip*.
 Run all cells after connecting to GPU for faster performance.
 
 ## Acknowledgments
-A big shout out to [Soni Aditya Bharatbhai](https://github.com/adityasoni9998), [Likhith Reddy Morredigari](https://github.com/likhnic) and [Rishi Raj](https://github.com/rsh-raj) for the amazing work !!
+A big shout out to [Soni Aditya Bharatbhai](https://github.com/adityasoni9998), [Likhith Reddy Morredigari](https://github.com/likhnic) and [Rishi Raj](https://github.com/rsh-raj) for the amazing work !
 
 [//]: #
 [jena-shreyas]: <https://github.com/jena-shreyas>
