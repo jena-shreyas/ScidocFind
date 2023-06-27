@@ -1,5 +1,8 @@
 # SciDocFind - Faceted Ranked Retrieval of Scientific Research Papers
 
+## Abstract
+- This paper proposes a novel approach for faceted retrieval of scientific research papers using the CSFCube dataset for evaluation. Given a query paper Q, a facet f ∈ {background, method, result} and a set of candidate papers {C1, C2,..., Cn}, the task is to rank candidate papers similar to Q with respect to the facet f. In particular we fine-tuned the SentBERT-PP model using the PARADE dataset and observed improvement in the performance metrics when the facet being searched for is result. Additionally we also fine-tuned the SPECTER and the Sci-NCL models using a subset of the HIC dataset. For the fine-tuned SPECTER model, we observed improvement in performance metrics when the facet being searched for is method.
+
 ## Paper 
 - The link for the paper is available [here](https://github.com/jena-shreyas/ScidocFind/blob/main/Reports/SciDocFind-Faceted_Ranked_Retrieval_of_Scientific_Research_Papers.pdf.pdf). 
 
