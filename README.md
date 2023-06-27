@@ -1,4 +1,4 @@
-# SciDocFind-Faceted Ranked Retrieval of Scientific Research Papers
+# SciDocFind - Faceted Ranked Retrieval of Scientific Research Papers
 
 ## Paper 
 - The link for the paper is available [here](https://github.com/jena-shreyas/ScidocFind/blob/main/Reports/SciDocFind-Faceted_Ranked_Retrieval_of_Scientific_Research_Papers.pdf.pdf). 
